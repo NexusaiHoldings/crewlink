@@ -25,6 +25,7 @@
 
 import type { HandlerContext, HandlerResult } from "@nexus/identity-and-access";
 import { handleGenerateScheduleFromConstraints } from "./generate_schedule_from_constraints";
+import { handleExecuteRealtimeReassignment } from "./execute_realtime_reassignment";
 
 type Args = Record<string, unknown>;
 
@@ -34,4 +35,5 @@ export const DOMAIN_DISPATCH: Record<
 > = {
   // Build agent appends entries here per CTO-declared new_domain_tool.
   generate_schedule_from_constraints: (ctx, a) => handleGenerateScheduleFromConstraints(ctx, a),
+  execute_realtime_reassignment: (ctx, a) => handleExecuteRealtimeReassignment(ctx, a),
 };
