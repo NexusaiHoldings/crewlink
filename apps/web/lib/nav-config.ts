@@ -5,7 +5,7 @@ export type NavLink = {
 };
 
 export type NavGroup = {
-  heading: string;
+  label: string;
   links: NavLink[];
 };
 
@@ -27,29 +27,29 @@ export const NAV_CONFIG: NavConfig = {
   ],
   groups: [
     {
-      heading: "Operations",
+      label: "Operations",
       links: [
         { label: "Schedule", href: "/schedule" },
         { label: "Dispatch Events", href: "/dispatch/events" },
       ],
     },
     {
-      heading: "Crew",
+      label: "Crew",
       links: [
         { label: "Workers", href: "/workers" },
         { label: "Crew Schedule", href: "/crew/schedule" },
       ],
     },
     {
-      heading: "Jobs",
+      label: "Jobs",
       links: [{ label: "Jobs", href: "/jobs" }],
     },
     {
-      heading: "Compliance",
+      label: "Compliance",
       links: [{ label: "Compliance Settings", href: "/settings/compliance" }],
     },
     {
-      heading: "Analytics",
+      label: "Analytics",
       links: [{ label: "Analytics Overview", href: "/analytics" }],
     },
   ],
