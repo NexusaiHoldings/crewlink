@@ -1,34 +1,11 @@
-/**
- * Top Navigation Configuration — substrate-topnav-001 (2026-05-24).
- *
- * Substrate ships with one nav entry (Home). Each portfolio company's
- * coding pipeline extends this file via F1-001 (per CTO mvp_scope —
- * cto-prompt-nav-requirement-001) to add links to the company's
- * specific feature pages.
- *
- * The substrate's TopNav component reads PRIMARY_NAV_LINKS and renders
- * them in the order declared.
- *
- * Convention:
- *   - Always keep Home as the first entry.
- *   - Group related pages with NavGroup (admin, account, etc.).
- *   - Use relative paths (Next.js route group parens collapse out of
- *     the URL — e.g. apps/web/app/(domain)/configure/page.tsx serves
- *     at /configure).
- *   - Server-only data; no client JS bundled from this file.
- */
-
 export type NavLink = {
-  /** URL path (without route-group parens). */
-  href: string;
-  /** Visible label. */
   label: string;
+  href: string;
+  exact?: boolean;
 };
 
 export type NavGroup = {
-  /** Group label (e.g. "Account", "Admin"). */
   label: string;
-  /** Child links shown inline (flat) inside the group. */
   links: NavLink[];
 };
 
@@ -37,27 +14,45 @@ export type NavConfig = {
   groups: NavGroup[];
 };
 
-/**
- * Default substrate configuration: just Home. Agents extending this
- * file should preserve Home as the first entry and append the
- * company-specific paths AFTER it.
- *
- * Example extension by F1-001:
- *   primary: [
- *     { href: "/", label: "Home" },
- *     { href: "/configure", label: "Configure" },
- *     { href: "/shop", label: "Shop" },
- *   ],
- *   groups: [
- *     { label: "Account", links: [
- *       { href: "/account/tier", label: "Tier" },
- *       { href: "/account/reorders", label: "Reorders" },
- *     ]},
- *   ],
- */
 export const NAV_CONFIG: NavConfig = {
   primary: [
-    { href: "/", label: "Home" },
+    { label: "Home", href: "/", exact: true },
+    { label: "Schedule", href: "/schedule" },
+    { label: "Workers", href: "/workers" },
+    { label: "Jobs", href: "/jobs" },
+    { label: "Dispatch Events", href: "/dispatch/events" },
+    { label: "Compliance", href: "/settings/compliance" },
+    { label: "Crew Schedule", href: "/crew/schedule" },
+    { label: "Analytics", href: "/analytics" },
   ],
-  groups: [],
+  groups: [
+    {
+      label: "Operations",
+      links: [
+        { label: "Schedule", href: "/schedule" },
+        { label: "Dispatch Events", href: "/dispatch/events" },
+      ],
+    },
+    {
+      label: "Crew",
+      links: [
+        { label: "Workers", href: "/workers" },
+        { label: "Crew Schedule", href: "/crew/schedule" },
+      ],
+    },
+    {
+      label: "Jobs",
+      links: [{ label: "Jobs", href: "/jobs" }],
+    },
+    {
+      label: "Compliance",
+      links: [{ label: "Compliance Settings", href: "/settings/compliance" }],
+    },
+    {
+      label: "Analytics",
+      links: [{ label: "Analytics Overview", href: "/analytics" }],
+    },
+  ],
 };
+
+export default NAV_CONFIG;
