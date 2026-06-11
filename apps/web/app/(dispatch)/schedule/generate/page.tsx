@@ -6,6 +6,7 @@
  * confirmation before publishing (per liability_assessor requirement).
  */
 
+import React from "react";
 import { redirect } from "next/navigation";
 import {
   generateSchedule,
@@ -97,11 +98,11 @@ async function handleRejectSchedule(formData: FormData): Promise<void> {
 // ── Status badge ───────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: string }): JSX.Element {
-  const styles: Record<string, string> = {
-    draft: "color:#92400e;background:#fef3c7;padding:2px 8px;border-radius:4px;font-size:12px",
-    pending_confirmation: "color:#1d4ed8;background:#dbeafe;padding:2px 8px;border-radius:4px;font-size:12px",
-    published: "color:#065f46;background:#d1fae5;padding:2px 8px;border-radius:4px;font-size:12px",
-    rejected: "color:#991b1b;background:#fee2e2;padding:2px 8px;border-radius:4px;font-size:12px",
+  const styles: Record<string, React.CSSProperties> = {
+    draft: { color: "#92400e", background: "#fef3c7", padding: "2px 8px", borderRadius: "4px", fontSize: "12px" },
+    pending_confirmation: { color: "#1d4ed8", background: "#dbeafe", padding: "2px 8px", borderRadius: "4px", fontSize: "12px" },
+    published: { color: "#065f46", background: "#d1fae5", padding: "2px 8px", borderRadius: "4px", fontSize: "12px" },
+    rejected: { color: "#991b1b", background: "#fee2e2", padding: "2px 8px", borderRadius: "4px", fontSize: "12px" },
   };
   const labels: Record<string, string> = {
     draft: "Draft",
