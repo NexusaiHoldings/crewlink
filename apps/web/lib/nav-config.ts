@@ -16,7 +16,7 @@ export type NavConfig = {
 
 export const NAV_CONFIG: NavConfig = {
   primary: [
-    { label: "Home", href: "/" },
+    { label: "Home", href: "/", exact: true },
     { label: "Schedule", href: "/schedule" },
     { label: "Workers", href: "/workers" },
     { label: "Jobs", href: "/jobs" },
