@@ -151,6 +151,9 @@ main input[type="button"],
 main .btn {
   font: inherit;
   font-weight: 550;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: var(--substrate-control-h);
   padding: 0 1rem;
   border: 1px solid var(--substrate-accent);
