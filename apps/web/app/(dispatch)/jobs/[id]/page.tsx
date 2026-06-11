@@ -139,7 +139,14 @@ export default async function JobDetailPage({
       )}
 
       <div className="card">
-        <h2>Assignment</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2>Assignment</h2>
+          {job.status !== 'completed' && job.status !== 'cancelled' && (
+            <Link href={`/jobs/${job.id}/assign`} className="btn">
+              {activeAssignment ? 'Reassign Worker' : 'Assign Worker'}
+            </Link>
+          )}
+        </div>
         {activeAssignment ? (
           <table>
             <tbody>
@@ -165,10 +172,7 @@ export default async function JobDetailPage({
           </table>
         ) : (
           <div className="empty">
-            <p>
-              No worker assigned yet. Visit the{' '}
-              <Link href="/schedule">Assignment Board</Link> to assign a worker.
-            </p>
+            <p>No worker assigned yet.</p>
           </div>
         )}
       </div>
