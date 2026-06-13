@@ -13,6 +13,7 @@ export interface BlogPostSummary {
   author: string;
   published_at: string;
   tags: string[];
+  hero_image_url: string | null;
 }
 
 export interface BlogPost extends BlogPostSummary {
@@ -56,7 +57,7 @@ function normalizeTags(raw: unknown): string[] {
 export async function listPublishedPosts(limit = 50): Promise<BlogPostSummary[]> {
   try {
     const { rows } = await getPool().query(
-      `SELECT slug, title, description, author, published_at, tags
+      `SELECT slug, title, description, author, published_at, tags, hero_image_url
          FROM blog_posts
         WHERE status = 'published'
         ORDER BY published_at DESC
@@ -70,6 +71,7 @@ export async function listPublishedPosts(limit = 50): Promise<BlogPostSummary[]>
       author: String(r.author || "Team"),
       published_at: String(r.published_at),
       tags: normalizeTags(r.tags),
+      hero_image_url: r.hero_image_url ? String(r.hero_image_url) : null,
     }));
   } catch {
     // Table may not exist yet on a fresh deploy — render an empty index
@@ -81,7 +83,7 @@ export async function listPublishedPosts(limit = 50): Promise<BlogPostSummary[]>
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const { rows } = await getPool().query(
-      `SELECT slug, title, description, author, published_at, tags, content_html
+      `SELECT slug, title, description, author, published_at, tags, hero_image_url, content_html
          FROM blog_posts
         WHERE slug = $1 AND status = 'published'
         LIMIT 1`,
@@ -96,6 +98,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       author: String(r.author || "Team"),
       published_at: String(r.published_at),
       tags: normalizeTags(r.tags),
+      hero_image_url: r.hero_image_url ? String(r.hero_image_url) : null,
       content_html: String(r.content_html),
     };
   } catch {

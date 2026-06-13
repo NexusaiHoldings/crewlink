@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS blog_posts (
   description text,
   content_html text NOT NULL,
   content_md text,
+  hero_image_url text,
   tags jsonb NOT NULL DEFAULT '[]'::jsonb,
   author text NOT NULL DEFAULT 'Team',
   status text NOT NULL DEFAULT 'published',

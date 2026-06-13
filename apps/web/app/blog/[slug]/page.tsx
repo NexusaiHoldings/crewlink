@@ -39,6 +39,14 @@ export default async function BlogPostPage({
         <Link href="/blog">← All posts</Link>
       </p>
       <article>
+        {post.hero_image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={post.hero_image_url}
+            alt={post.title}
+            style={{ width: "100%", borderRadius: 10, marginBottom: 20, aspectRatio: "16 / 9", objectFit: "cover" }}
+          />
+        ) : null}
         <h1>{post.title}</h1>
         <p>
           <small>

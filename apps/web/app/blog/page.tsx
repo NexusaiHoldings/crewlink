@@ -38,6 +38,16 @@ export default async function BlogIndexPage(): Promise<JSX.Element> {
         <div>
           {posts.map((p) => (
             <article key={p.slug} className="card">
+              {p.hero_image_url ? (
+                <Link href={`/blog/${p.slug}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.hero_image_url}
+                    alt={p.title}
+                    style={{ width: "100%", borderRadius: 8, marginBottom: 12, aspectRatio: "16 / 9", objectFit: "cover" }}
+                  />
+                </Link>
+              ) : null}
               <h2>
                 <Link href={`/blog/${p.slug}`}>{p.title}</Link>
               </h2>
