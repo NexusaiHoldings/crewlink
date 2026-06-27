@@ -32,6 +32,7 @@
     "@nexus/files-and-media": "*",
     "@nexus/developer-surface": "*",
     "@nexus/social-and-engagement": "*",
-    "@nexus-substrate/runtime-client": "*"
+    "@nexus-substrate/runtime-client": "*",
+    "@nexus/feedback": "*"
   }
 }

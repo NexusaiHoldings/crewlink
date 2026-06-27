@@ -4,6 +4,8 @@ import { TopNav } from "@/components/topnav";
 import { Footer } from "@/components/Footer";
 import { CookieBanner } from "@nexus/legal-and-compliance/ui/CookieBanner";
 import { SupportWidget } from "@nexus/support-and-help/ui/SupportWidget";
+import { FeedbackWidget } from "@nexus/feedback/ui/FeedbackWidget";
+import { getSessionUser } from "@/lib/admin-auth";
 import { AnalyticsBeacon } from "@/components/AnalyticsBeacon";
 import { CommandPalette } from "@/components/CommandPalette";
 import { activeTheme } from "@/lib/theme/active-theme";
@@ -42,12 +44,14 @@ function rootThemeCss(t: ThemeContract): string {
   return `:root{${decls.map(([k, v]) => `${k}:${v}`).join(";")}}`;
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;
-}): JSX.Element {
+}): Promise<JSX.Element> {
   const themeFontHref = fontHref(activeTheme.type.fontHeading, activeTheme.type.fontBody);
+  // Feedback FAB is for signed-in users only (cookie-gated; no DB hit when anon).
+  const sessionUser = await getSessionUser();
   return (
     <html lang="en">
       <body>
@@ -67,6 +71,9 @@ export default function RootLayout({
             attributed server-side by the /api/support/tickets shim from the
             session, so the widget works anonymously too. */}
         <SupportWidget />
+        {/* Feedback → Build FAB (feedback-to-build-loop-001). Signed-in only;
+            user attribution is resolved server-side by /api/feedback. */}
+        {sessionUser ? <FeedbackWidget /> : null}
         <AnalyticsBeacon />
         <CommandPalette />
       </body>
