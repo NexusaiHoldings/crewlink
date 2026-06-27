@@ -17,6 +17,12 @@
 const FORWARD_SUBJECTS: ReadonlySet<string> = new Set([
   "user.created",
   "billing.payment_succeeded",
+  // feedback-to-build-loop-001: the @nexus/feedback lego forwards these so the
+  // runtime can triage, drive the change-request pipeline, and reconcile. Must
+  // be allow-listed here or buildEventBus() silently drops them.
+  "feedback.submitted",
+  "feedback.action",
+  "feedback.answer",
 ]);
 
 /** Whether a given lego subject should be forwarded to the runtime. */

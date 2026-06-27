@@ -51,6 +51,27 @@ export function isAdminEmail(email: string): boolean {
 }
 
 /**
+ * Allow-listed chairman emails (lowercased) — the admins permitted to approve
+ * HIGH-RISK feedback Builds (auth/billing/data-model/infra). feedback-to-build-
+ * loop-001. Defaults to the admin allow-list so single-admin incubating
+ * companies aren't deadlocked (the sole admin IS the chairman); set
+ * CHAIRMAN_EMAILS to a narrower list to restrict high-risk approval.
+ */
+export function chairmanEmails(): string[] {
+  const raw = process.env.CHAIRMAN_EMAILS;
+  if (!raw || !raw.trim()) return adminEmails();
+  return raw
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s.length > 0);
+}
+
+/** True if the email may approve high-risk feedback Builds. */
+export function isChairmanEmail(email: string): boolean {
+  return chairmanEmails().includes(email.toLowerCase());
+}
+
+/**
  * Resolve the current session user (any role), or null. Returns null with NO
  * DB hit when there is no session cookie (anonymous traffic); otherwise
  * validates the session via the identity lego.
