@@ -27,6 +27,10 @@ const FORWARD_SUBJECTS: ReadonlySet<string> = new Set([
   // bridge to the control plane, which enrolls the lead in the armed
   // welcome-email sequence.
   "lead.captured",
+  // operations-os-truth-to-checklist-001 Phase 2: support tickets bridge to
+  // the operations OS support engine (support.ticket.created — the COO's
+  // first real customer-facing loop).
+  "ticket.created",
 ]);
 
 /** Whether a given lego subject should be forwarded to the runtime. */

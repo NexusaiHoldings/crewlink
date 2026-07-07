@@ -16,10 +16,17 @@ const VALID_PRIORITY = new Set(["low", "normal", "high", "urgent"]);
 /** POST /api/support/tickets — open a new ticket + first message. */
 export async function handleCreateTicket(
   ctx: HandlerContext,
-  body: { user_id?: string; subject?: string; message?: string; priority?: string },
+  body: {
+    user_id?: string;
+    subject?: string;
+    message?: string;
+    priority?: string;
+    email?: string;
+  },
 ): Promise<HandlerResult> {
   const subject = (body.subject ?? "").trim();
   const message = (body.message ?? "").trim();
+  const email = (body.email ?? "").trim().toLowerCase();
   if (!subject) return err(400, "subject is required");
   if (!message) return err(400, "message is required");
   const priority = VALID_PRIORITY.has(body.priority ?? "") ? body.priority! : "normal";
@@ -43,10 +50,15 @@ export async function handleCreateTicket(
     message,
   );
 
+  // email + message ride the event so the control plane can draft AND deliver
+  // a reply without a cross-DB lookup (same pattern as lead.captured carrying
+  // email+name — operations-os-truth-to-checklist-001 Phase 2).
   await ctx.events.publish("ticket.created", {
     ticket_id: ticketId,
     user_id: body.user_id ?? null,
+    email: email || null,
     subject,
+    message,
     priority,
   });
 

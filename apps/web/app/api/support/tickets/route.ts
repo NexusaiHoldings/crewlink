@@ -31,7 +31,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   const body = await request.json().catch(() => ({}));
   const result = await handleCreateTicket(
     { db: buildDb(), events: buildEventBus() },
-    { ...body, user_id: user?.id ?? body.user_id ?? null },
+    {
+      ...body,
+      user_id: user?.id ?? body.user_id ?? null,
+      // Reply-ability: session email wins; anonymous tickets carry the
+      // widget-supplied email (operations support loop drafts + sends replies).
+      email: user?.email ?? body.email ?? null,
+    },
   );
   return respond(result);
 }

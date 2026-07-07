@@ -26,6 +26,7 @@ export function SupportWidget({ apiBase = "", userId }: SupportWidgetProps) {
   const [question, setQuestion] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
   const [candidates, setCandidates] = useState<KbCandidate[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [ticketId, setTicketId] = useState<string | null>(null);
@@ -60,7 +61,7 @@ export function SupportWidget({ apiBase = "", userId }: SupportWidgetProps) {
       const res = await fetch(`${apiBase}/api/support/tickets`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, subject, message }),
+        body: JSON.stringify({ user_id: userId, subject, message, email: email || undefined }),
       });
       if (res.ok) {
         const d = await res.json();
@@ -138,6 +139,15 @@ export function SupportWidget({ apiBase = "", userId }: SupportWidgetProps) {
           )}
 
           <form onSubmit={openTicket} style={{ marginTop: 12 }}>
+            {!userId && (
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email (so we can reply)"
+                style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #ddd", marginBottom: 8 }}
+              />
+            )}
             <input
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
