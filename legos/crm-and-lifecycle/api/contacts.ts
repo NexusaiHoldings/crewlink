@@ -26,8 +26,12 @@ export async function handleCaptureLead(
     body.source ?? "lead_form",
   );
   const contactId = rows[0].id as string;
+  // email + name ride on the event so the control plane can enroll the lead
+  // in the welcome sequence without a cross-DB lookup (email-lead-bridge-001).
   await ctx.events.publish("lead.captured", {
     contact_id: contactId,
+    email: body.email ?? null,
+    name,
     source: body.source ?? "lead_form",
   });
   return ok({ contact_id: contactId, stage: "new" }, 201);

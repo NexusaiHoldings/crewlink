@@ -23,6 +23,10 @@ const FORWARD_SUBJECTS: ReadonlySet<string> = new Set([
   "feedback.submitted",
   "feedback.action",
   "feedback.answer",
+  // email-lead-bridge-001: lead-form submissions (crm-and-lifecycle lego)
+  // bridge to the control plane, which enrolls the lead in the armed
+  // welcome-email sequence.
+  "lead.captured",
 ]);
 
 /** Whether a given lego subject should be forwarded to the runtime. */
