@@ -382,20 +382,24 @@ export async function handleSyncFeedback(
     sets.push(`requested_action = $${n++}`);
     values.push(patch.requested_action);
   }
-  // Full history replace — the Nexus discussion thread (its turns + the converged
-  // recommendation) lives control-plane-side; sync it so the operator SEES it.
-  if (Array.isArray(patch.history)) {
-    sets.push(`history = $${n++}::jsonb`);
-    values.push(JSON.stringify(patch.history));
-  }
 
-  if (sets.length === 0) {
+  const hasHistory = Array.isArray(patch.history);
+  if (sets.length === 0 && !hasHistory) {
     return err(400, "no recognized fields to update");
   }
 
-  // Audit the sync.
-  sets.push(`history = history || $${n++}::jsonb`);
-  values.push(historyEntry("sync", String(patch.note || "nexus sync"), "nexus"));
+  // History assignment — EXACTLY ONE (Postgres rejects two assignments to the
+  // same column in one UPDATE). When Nexus syncs the whole thread (its discussion
+  // turns + the converged recommendation, control-plane-side), full-REPLACE with
+  // it — that array already carries the complete audited history. Otherwise append
+  // a lightweight sync audit entry.
+  if (hasHistory) {
+    sets.push(`history = $${n++}::jsonb`);
+    values.push(JSON.stringify(patch.history));
+  } else {
+    sets.push(`history = history || $${n++}::jsonb`);
+    values.push(historyEntry("sync", String(patch.note || "nexus sync"), "nexus"));
+  }
   sets.push("updated_at = NOW()");
 
   await ctx.db.execute(
