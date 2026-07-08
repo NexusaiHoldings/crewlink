@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS feedback (
     description     TEXT        NOT NULL,
     page            TEXT,
     status          TEXT        NOT NULL DEFAULT 'new'
-                                CHECK (status IN ('new', 'triaged', 'building', 'declined', 'done')),
+                                CHECK (status IN ('new', 'triaged', 'discuss', 'building', 'declined', 'done')),
     -- submitter (identity-and-access). Nullable so anonymous capture degrades
     -- gracefully, though the FAB only shows for signed-in users.
     user_id         UUID,

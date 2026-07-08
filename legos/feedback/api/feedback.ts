@@ -23,7 +23,7 @@ import type { HandlerContext, HandlerResult } from "./_lib/handler";
 // ── domain constants ───────────────────────────────────────────────────────
 
 export const FEEDBACK_TYPES = ["bug", "edit", "idea"] as const;
-export const FEEDBACK_STATUSES = ["new", "triaged", "building", "declined", "done"] as const;
+export const FEEDBACK_STATUSES = ["new", "triaged", "discuss", "building", "declined", "done"] as const;
 export const FEEDBACK_ACTIONS = ["build", "revise", "discuss", "decline"] as const;
 
 export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
