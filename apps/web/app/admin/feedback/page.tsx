@@ -305,30 +305,61 @@ export default function FeedbackAdminPage(): JSX.Element {
                       </div>
                     )}
 
-                    {/* Clarifying-question round-trip */}
-                    {it.pendingQuestion && (
-                      <div style={{ marginTop: 12, padding: 12, borderRadius: 8,
-                        background: "#eff6ff", border: "1px solid #bfdbfe" }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1e40af" }}>
-                          The build needs a clarification:
+                    {/* Discussion thread — Nexus turns + your replies as a
+                        conversation (not buried in the History log), with an
+                        inline reply box so you continue by replying rather than
+                        re-clicking Discuss. */}
+                    {(() => {
+                      const turns = Array.isArray(it.history)
+                        ? it.history.filter((h) => h.kind === "discuss" || h.kind === "answer")
+                        : [];
+                      if (turns.length === 0 && !it.pendingQuestion) return null;
+                      const awaiting = it.actionState === "in_flight";
+                      return (
+                        <div style={{ marginTop: 12, padding: 12, borderRadius: 8,
+                          background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: "#334155",
+                            marginBottom: 8 }}>Discussion with Nexus</div>
+                          {turns.map((t, i) => {
+                            const isNexus = t.kind === "discuss";
+                            return (
+                              <div key={i} style={{ display: "flex",
+                                justifyContent: isNexus ? "flex-start" : "flex-end",
+                                marginBottom: 6 }}>
+                                <div style={{ maxWidth: "85%", padding: "8px 10px",
+                                  borderRadius: 8, fontSize: 13, whiteSpace: "pre-wrap",
+                                  background: isNexus ? "#eff6ff" : "#f1f5f9",
+                                  border: `1px solid ${isNexus ? "#bfdbfe" : "#e2e8f0"}`,
+                                  color: isNexus ? "#1e3a8a" : "#334155" }}>
+                                  <div style={{ fontSize: 11, fontWeight: 600, marginBottom: 2,
+                                    color: isNexus ? "#2563eb" : "#64748b" }}>
+                                    {isNexus ? "Nexus" : "You"}
+                                  </div>
+                                  {t.detail}
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {awaiting && (
+                            <div style={{ fontSize: 12, color: "#2563eb", fontStyle: "italic",
+                              margin: "2px 0 6px" }}>Nexus is thinking…</div>
+                          )}
+                          <textarea
+                            value={answers[it.id] || ""}
+                            onChange={(e) => setAnswers((a) => ({ ...a, [it.id]: e.target.value }))}
+                            placeholder="Reply to continue the discussion…"
+                            rows={2}
+                            style={{ width: "100%", padding: 8, borderRadius: 6, marginTop: 4,
+                              border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                          />
+                          <button disabled={busy === it.id || !(answers[it.id] || "").trim()}
+                            onClick={() => answer(it.id)}
+                            style={{ ...btn("#2563eb", "#fff", "#2563eb"), marginTop: 6 }}>
+                            {busy === it.id ? "…" : "Send reply"}
+                          </button>
                         </div>
-                        <p style={{ margin: "6px 0 8px", fontSize: 13, color: "#1e3a8a" }}>
-                          {it.pendingQuestion}
-                        </p>
-                        <textarea
-                          value={answers[it.id] || ""}
-                          onChange={(e) => setAnswers((a) => ({ ...a, [it.id]: e.target.value }))}
-                          placeholder="Your answer…"
-                          rows={2}
-                          style={{ width: "100%", padding: 8, borderRadius: 6,
-                            border: "1px solid #bfdbfe", boxSizing: "border-box" }}
-                        />
-                        <button disabled={busy === it.id} onClick={() => answer(it.id)}
-                          style={{ ...btn("#2563eb", "#fff", "#2563eb"), marginTop: 6 }}>
-                          {busy === it.id ? "…" : "Send answer"}
-                        </button>
-                      </div>
-                    )}
+                      );
+                    })()}
 
                     {/* History timeline */}
                     {Array.isArray(it.history) && it.history.length > 0 && (
