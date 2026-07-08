@@ -24,6 +24,7 @@ interface TriageScores {
 interface Triage {
   recommendation?: string;
   scores?: TriageScores;
+  confidence?: number;
   summary?: string;
   sourceRef?: string;
   requiresChairman?: boolean;
@@ -257,6 +258,13 @@ export default function FeedbackAdminPage(): JSX.Element {
                           <p style={{ margin: "6px 0 0", fontSize: 13, color: "#334155" }}>
                             {it.triage.summary}
                           </p>
+                        )}
+                        {typeof it.triage?.confidence === "number" && (
+                          <div style={{ marginTop: 8, fontSize: 13, fontWeight: 600,
+                            color: it.triage.confidence >= 75 ? "#15803d"
+                              : it.triage.confidence >= 50 ? "#b45309" : "#b91c1c" }}>
+                            Overall confidence: {it.triage.confidence}/100
+                          </div>
                         )}
                         {it.triage?.scores && (
                           <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 12,
