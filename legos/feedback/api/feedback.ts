@@ -382,6 +382,12 @@ export async function handleSyncFeedback(
     sets.push(`requested_action = $${n++}`);
     values.push(patch.requested_action);
   }
+  // Full history replace — the Nexus discussion thread (its turns + the converged
+  // recommendation) lives control-plane-side; sync it so the operator SEES it.
+  if (Array.isArray(patch.history)) {
+    sets.push(`history = $${n++}::jsonb`);
+    values.push(JSON.stringify(patch.history));
+  }
 
   if (sets.length === 0) {
     return err(400, "no recognized fields to update");

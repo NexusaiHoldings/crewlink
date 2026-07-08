@@ -109,8 +109,8 @@ export default function FeedbackAdminPage(): JSX.Element {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const r = await fetch("/api/feedback", { cache: "no-store" });
       const d = await r.json();
@@ -120,11 +120,24 @@ export default function FeedbackAdminPage(): JSX.Element {
     } catch (e) {
       setErr(String(e));
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  // Discuss/answer turns are produced ASYNC by Nexus (event → runtime → sync back
+  // a few seconds later). While any item is awaiting Nexus (action_state
+  // 'in_flight'), quietly re-fetch so the new turn / recommendation appears
+  // without a manual refresh.
+  useEffect(() => {
+    const awaiting = items.some(
+      (it: { actionState?: string }) => it.actionState === "in_flight",
+    );
+    if (!awaiting) return;
+    const t = setInterval(() => load(true), 4000);
+    return () => clearInterval(t);
+  }, [items, load]);
 
   const act = async (id: string, action: string) => {
     setBusy(id);
@@ -267,7 +280,7 @@ export default function FeedbackAdminPage(): JSX.Element {
                           </div>
                         )}
                         {it.triage?.scores && (
-                          <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 12,
+                          <div style={{ display: "flex", gap: 16, marginTop: 6, fontSize: 12,
                             color: "#64748b" }}>
                             <span>complexity {it.triage.scores.complexity ?? "—"}</span>
                             <span>fit {it.triage.scores.fit ?? "—"}</span>
