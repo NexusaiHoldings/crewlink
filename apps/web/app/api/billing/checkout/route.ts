@@ -15,6 +15,15 @@ export const runtime = "nodejs";
 export async function POST(request: Request): Promise<NextResponse> {
   const user = await getSessionUser();
   const body = await request.json().catch(() => ({}));
+  // Stripe REQUIRES absolute success/cancel URLs; the CheckoutForm passes
+  // site-relative paths ("/billing?status=success") which Stripe 400s —
+  // every live checkout 502'd on this (billing-flow-qa-001, 2026-07-08).
+  // Absolutize against the request's own origin (the company domain).
+  const origin = new URL(request.url).origin;
+  const abs = (u: unknown): unknown =>
+    typeof u === "string" && u.startsWith("/") ? `${origin}${u}` : u;
+  body.success_url = abs(body.success_url);
+  body.cancel_url = abs(body.cancel_url);
   const result = await handleCheckout({
     userId: user?.id ?? null,
     body,
