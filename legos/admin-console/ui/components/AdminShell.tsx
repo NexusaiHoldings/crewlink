@@ -42,14 +42,19 @@ export function AdminShell({ children, currentPath, adminUser, onExit, adminNavE
         </nav>
       </aside>
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* NOTE on explicit `color` below: the substrate wraps every page in
+            <main>, whose `main button` rule paints button text with the theme's
+            accent-text (often white). These inline styles override background
+            but must ALSO override color, or the labels render white-on-pale
+            (~1.1:1 — the "Exit admin near-invisible" QA class). */}
         <header style={{ height: 56, background: "#fff", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", padding: "0 24px", gap: 12 }}>
-          <span style={{ flex: 1, fontSize: 14, color: "#64748b" }}>{adminUser ? `Signed in as ${adminUser.email}` : "Admin"}</span>
+          <span style={{ flex: 1, fontSize: 14, color: "#334155" }}>{adminUser ? `Signed in as ${adminUser.email}` : "Admin"}</span>
           {enableImpersonation && (
-            <button style={{ fontSize: 13, padding: "4px 12px", background: "#fef3c7", border: "1px solid #fbbf24", borderRadius: 4, cursor: "pointer" }}
+            <button style={{ fontSize: 13, fontWeight: 600, padding: "4px 12px", background: "#fef3c7", color: "#78350f", border: "1px solid #fbbf24", borderRadius: 4, cursor: "pointer" }}
               onClick={() => alert("Impersonation deferred to security-review sprint")}>Impersonate user</button>
           )}
           {onExit && (
-            <button style={{ fontSize: 13, padding: "4px 12px", background: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: 4, cursor: "pointer" }} onClick={onExit}>Exit admin</button>
+            <button style={{ fontSize: 13, fontWeight: 600, padding: "4px 12px", background: "#f1f5f9", color: "#0f172a", border: "1px solid #94a3b8", borderRadius: 4, cursor: "pointer" }} onClick={onExit}>Exit admin</button>
           )}
         </header>
         <main style={{ flex: 1, padding: 24, background: "#f8fafc", overflowY: "auto" }}>{children}</main>

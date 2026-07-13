@@ -30,7 +30,7 @@ export function AdminPageTemplate({
             <span key={i}>
               {i > 0 && <span style={{ margin: "0 6px" }}>›</span>}
               {b.href ? (
-                <a href={b.href} style={{ color: "#3b82f6", textDecoration: "none" }}>{b.label}</a>
+                <a href={b.href} style={{ color: "#1d4ed8", textDecoration: "none" }}>{b.label}</a>
               ) : (
                 <span>{b.label}</span>
               )}

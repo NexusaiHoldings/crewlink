@@ -29,7 +29,7 @@ export function AuditLogPage() {
     { key: "target_type", header: "Target Type" },
     { key: "target_id", header: "Target ID" },
     { key: "payload", header: "Payload", render: (v, row) => (
-      <span style={{ cursor: "pointer", color: "#3b82f6", fontSize: 12 }} onClick={() => setExpanded(expanded === row.id ? null : row.id)}>
+      <span style={{ cursor: "pointer", color: "#1d4ed8", fontSize: 12, fontWeight: 600 }} onClick={() => setExpanded(expanded === row.id ? null : row.id)}>
         {expanded === row.id ? "▾ hide" : "▸ show"}
         {expanded === row.id && <pre style={{ marginTop: 4, background: "#f8fafc", padding: 6, borderRadius: 4, fontSize: 11, maxWidth: 360, overflow: "auto" }}>{JSON.stringify(v, null, 2)}</pre>}
       </span>

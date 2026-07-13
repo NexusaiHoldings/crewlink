@@ -25,7 +25,7 @@ export function AdminTable<T extends Record<string, any>>({ columns, rows, loadi
     <div>
       {filterPills && <div style={{ padding: "10px 14px", borderBottom: "1px solid #e2e8f0" }}>{filterPills}</div>}
       {rows.length === 0 ? (
-        <div style={{ padding: 24, textAlign: "center", color: "#94a3b8" }}>{emptyMessage}</div>
+        <div style={{ padding: 24, textAlign: "center", color: "#475569" }}>{emptyMessage}</div>
       ) : (
         <>
           <div style={{ overflowX: "auto" }}>
