@@ -2,7 +2,7 @@
  * @nexus/analytics-and-telemetry — public barrel.
  * Spec authority: NEXUS_PORTFOLIO_RUNTIME_SPEC.md §11 capability #13.
  */
-export { handleRecordEvent, handleEventCounts, handleListFunnels } from "./api/analytics";
+export { handleRecordEvent, handleEventCounts, handleListFunnels, handleAnalyticsSummary } from "./api/analytics";
 export { AnalyticsDashboard } from "./ui/components/AnalyticsDashboard";
 export type { HandlerContext, HandlerResult } from "./api/_lib/handler";
 export type { Db, DbRow } from "./api/_lib/db";
