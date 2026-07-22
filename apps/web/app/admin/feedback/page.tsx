@@ -134,6 +134,9 @@ export default function FeedbackAdminPage(): JSX.Element {
   const [busy, setBusy] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  // Default to OPEN items (everything not done/declined) so triage isn't a
+  // scroll through history. Chips switch the view; "All" shows everything.
+  const [statusFilter, setStatusFilter] = useState<string>("open");
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -227,15 +230,55 @@ export default function FeedbackAdminPage(): JSX.Element {
         </div>
       )}
 
-      {loading ? (
+      {/* Status filter chips — default hides done/declined */}
+      {items.length > 0 && (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+          {(() => {
+            const openCount = items.filter(
+              (it) => it.status !== "done" && it.status !== "declined").length;
+            const chips: Array<[string, string]> = [
+              ["open", `Open (${openCount})`],
+              ["all", `All (${items.length})`],
+              ["building", "Building"],
+              ["declined", "Declined"],
+              ["done", `Done (${items.filter((it) => it.status === "done").length})`],
+            ];
+            return chips.map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setStatusFilter(key)}
+                style={{
+                  fontSize: 12, fontWeight: 700, padding: "4px 12px", borderRadius: 999,
+                  cursor: "pointer",
+                  border: statusFilter === key ? "1px solid #2563eb" : "1px solid #e2e8f0",
+                  background: statusFilter === key ? "#2563eb" : "#fff",
+                  color: statusFilter === key ? "#fff" : "#475569",
+                }}
+              >{label}</button>
+            ));
+          })()}
+        </div>
+      )}
+
+      {(() => {
+        const visible = items.filter((it) =>
+          statusFilter === "all" ? true
+          : statusFilter === "open" ? it.status !== "done" && it.status !== "declined"
+          : it.status === statusFilter);
+        return loading ? (
         <div style={{ ...card, padding: 16, color: "#64748b" }}>Loading…</div>
       ) : items.length === 0 ? (
         <div style={{ ...card, padding: 24, color: "#64748b" }}>
           No feedback yet. Submitted items will appear here for triage.
         </div>
+      ) : visible.length === 0 ? (
+        <div style={{ ...card, padding: 24, color: "#64748b" }}>
+          Nothing {statusFilter === "open" ? "open" : `in “${statusFilter}”`} — {items.length} item{items.length === 1 ? "" : "s"} under other filters.
+        </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {items.map((it) => {
+          {visible.map((it) => {
             const isOpen = open === it.id;
             const rec = it.triage?.recommendation;
             const highRisk = it.triage?.requiresChairman === true;
@@ -461,7 +504,8 @@ export default function FeedbackAdminPage(): JSX.Element {
             );
           })}
         </div>
-      )}
+      );
+      })()}
     </div>
   );
 }
