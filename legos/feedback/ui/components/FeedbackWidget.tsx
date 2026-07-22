@@ -31,6 +31,14 @@ export function FeedbackWidget({ apiBase = "" }: FeedbackWidgetProps) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The page the user was on when they CLICKED Feedback — client-side nav can
+  // change location between open and submit, and the click is what they meant.
+  const [pageAtOpen, setPageAtOpen] = useState<string | null>(null);
+
+  function currentPage(): string | null {
+    if (typeof window === "undefined") return null;
+    return window.location.pathname + window.location.search;
+  }
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -41,7 +49,7 @@ export function FeedbackWidget({ apiBase = "" }: FeedbackWidgetProps) {
     setError(null);
     setSubmitting(true);
     try {
-      const page = typeof window !== "undefined" ? window.location.pathname : null;
+      const page = pageAtOpen ?? currentPage();
       const res = await fetch(`${apiBase}/api/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,6 +78,7 @@ export function FeedbackWidget({ apiBase = "" }: FeedbackWidgetProps) {
         onClick={() => {
           setOpen(true);
           setDone(false);
+          setPageAtOpen(currentPage());
         }}
         aria-label="Send feedback"
         style={{

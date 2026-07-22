@@ -94,6 +94,32 @@ function fmt(ts: string | null | undefined): string {
   try { return new Date(ts).toLocaleString(); } catch { return String(ts); }
 }
 
+/**
+ * The page the submitter was on, as a link back to it for review. Only
+ * same-site relative paths ("/…", not "//…") are linkified — anything else
+ * renders as plain text so a malformed value can't become an off-site or
+ * javascript: link.
+ */
+function PageLink({ page }: { page: string | null }): JSX.Element {
+  if (!page) return <span>Page: —</span>;
+  const linkable = page.startsWith("/") && !page.startsWith("//");
+  if (!linkable) return <span>Page: {page}</span>;
+  return (
+    <span>
+      Page:{" "}
+      <a
+        href={page}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`Open ${page} in a new tab`}
+        style={{ color: "#2563eb", fontWeight: 600, textDecoration: "underline" }}
+      >
+        {page} ↗
+      </a>
+    </span>
+  );
+}
+
 const btn = (bg: string, fg: string, border: string): React.CSSProperties => ({
   fontSize: 13, padding: "6px 14px", borderRadius: 7, cursor: "pointer",
   border: `1px solid ${border}`, background: bg, color: fg, fontWeight: 600,
@@ -252,7 +278,7 @@ export default function FeedbackAdminPage(): JSX.Element {
                     <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 12,
                       fontSize: 13, color: "#64748b" }}>
                       <span>From: {it.user?.email || it.user?.name || "anonymous"}</span>
-                      <span>Page: {it.page || "—"}</span>
+                      <PageLink page={it.page} />
                       <span>Submitted: {fmt(it.createdAt)}</span>
                     </div>
 
